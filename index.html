@@ -152,6 +152,123 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-第五章单片机的中断系统/单片机的中断系统" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/01/17/%E7%AC%AC%E4%BA%94%E7%AB%A0%E5%8D%95%E7%89%87%E6%9C%BA%E7%9A%84%E4%B8%AD%E6%96%AD%E7%B3%BB%E7%BB%9F/%E5%8D%95%E7%89%87%E6%9C%BA%E7%9A%84%E4%B8%AD%E6%96%AD%E7%B3%BB%E7%BB%9F/">第五章单片机的中断系统/单片机的中断系统</a>
+    </h1>
+  
+
+        
+        <a href="/2020/01/17/%E7%AC%AC%E4%BA%94%E7%AB%A0%E5%8D%95%E7%89%87%E6%9C%BA%E7%9A%84%E4%B8%AD%E6%96%AD%E7%B3%BB%E7%BB%9F/%E5%8D%95%E7%89%87%E6%9C%BA%E7%9A%84%E4%B8%AD%E6%96%AD%E7%B3%BB%E7%BB%9F/" class="archive-article-date">
+  	<time datetime="2020-01-17T11:33:46.300Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-17</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="第五章-单片机的中断系统"><a href="#第五章-单片机的中断系统" class="headerlink" title="第五章 单片机的中断系统"></a>第五章 单片机的中断系统</h2><h3 id="5-1中断的概念"><a href="#5-1中断的概念" class="headerlink" title="5.1中断的概念"></a>5.1中断的概念</h3><p>计算机在运行当前程序的过程中，若遇到紧急或突发事件，可以暂停当前程序的运行，转向处理该突发事件，处理完成后再从当前程序的间断处接着运行。</p>
+<p><strong>中断的嵌套：</strong> 中断服务过程中执行更高级别的中断服务称为中断函数的嵌套。</p>
+<p><strong>采用中断技术能够实现的功能：</strong></p>
+<p>1 . 分时操作：计算机的中断系统可使 CPU 与外设同时工作，分时为各外设提供服务。</p>
+<p>2 . 实时处理  3. 故障处理。</p>
+<h3 id="5-2-中断控制系统"><a href="#5-2-中断控制系统" class="headerlink" title="5.2 中断控制系统"></a>5.2 中断控制系统</h3><h5 id="中断控制系统的结构："><a href="#中断控制系统的结构：" class="headerlink" title="中断控制系统的结构："></a>中断控制系统的结构：</h5><p><strong>中断源：</strong>   中断管理系统能够处理的突发事件。</p>
+<p><img src="%E4%B8%AD%E6%96%AD%E6%BA%90%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%86%85%E5%AE%B9.png" alt="中断源的基本内容"></p>
+<p>/INT0 和 /INT1 都是以单片机特定引脚上的电平或脉冲事件作为中断状态的。统称外部中断。对于C语言来说 调用中断函数时不用中断向量，而要用到中断源相应的中断号。汇编语言用ROM中规定了5个特殊的ROM单元（中断向量）用于引导中断函数调用。</p>
+<h5 id="中断请求标志"><a href="#中断请求标志" class="headerlink" title="中断请求标志"></a>中断请求标志</h5><p>当中断源的突发事件出现时，单片机中某些特殊功能寄存器的特殊标志位会被硬件方式自动修改，这些特殊标志位称为中断请求标志。程序运行过程中，CPU只需要定期查看中断标志是否为1，就可知道有无中断发生。0~3号中断各有一个中断标志位， 4号中断（串行口中断）有两个中断请求标志位（但公用一个中断号）。</p>
+<p><img src="%E4%B8%AD%E6%96%AD%E6%BA%90%E4%B8%8E%E4%B8%AD%E6%96%AD%E7%94%B3%E8%AF%B7%E6%A0%87%E5%BF%97%E4%BD%8D.png" alt="中断源与中断申请标志位"></p>
+<p>中断源出现某冲特定的信号时，相应的终端申请就自动置1。</p>
+<p><strong>外部中断</strong> </p>
+<p><img src="INT0%E4%B8%AD%E6%96%AD%E8%AF%B7%E6%B1%82%E5%8E%9F%E7%90%86.PNG" alt="INT0中断请求原理"></p>
+<p>​                                    /INT0 中断请求原理</p>
+<p>IT0 = 0（低电平触发）：若/INT0 为高电平，IE0硬件清零，/INT0 低电平 IE0硬件置 1；</p>
+<p>IT0 = 1（下降沿触发）：若/INT0 为正跳变脉冲，IE0硬件清零，/INT0 负跳变脉冲 IE0硬件置 1；</p>
+<h5 id="内部中断源（T0和T1）"><a href="#内部中断源（T0和T1）" class="headerlink" title="内部中断源（T0和T1）"></a>内部中断源（T0和T1）</h5><p><img src="T0%E4%B8%AD%E6%96%AD%E6%BA%90%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86.png" alt="T0中断源工作原理"></p>
+<p>当  T0 被充满溢出后，可向位寄存器 TF0 “ 进位 “，产生硬件置 1 的效果。TF0 在系统相应中断请求后才会被硬件请0，否则会一直保持溢出时的高电平状态。</p>
+<h5 id="内部中断源（TX-RX）"><a href="#内部中断源（TX-RX）" class="headerlink" title="内部中断源（TX/RX）"></a>内部中断源（TX/RX）</h5><p>来自串口的 RXD 的一帧数据经过移位寄存器被送入 ” 接收SBUF ” 单元后，接受控制器 将使 位寄存器 RI 硬件置1.</p>
+<p>同理，来自串口的 “发送 SBUF ” 单元的一帧数据经过输出门发送出去后，发送控制器 将使 位寄存器 TI 硬件置1。</p>
+<p>与前四种中断不同的是响应中断后，TI、RI 都不会硬件清 0 ，而是需要软件方式清 0 ，</p>
+<h5 id="中断控制"><a href="#中断控制" class="headerlink" title="中断控制"></a>中断控制</h5><p>用户对单片机中断系统的操作是通过控制寄存器实现的。80C51设置了4个控制寄存器，定时器控制寄存器TCON，串口控制寄存器SCON、中断允许控制寄存器 IE 、中断优先级控制寄存器 IP。</p>
+<p><img src="%E7%BB%88%E7%AB%AF%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%BB%84%E6%88%90.png" alt="终端系统的组成"></p>
+<p>​                                        中断系统的组成</p>
+<p><strong>TCON寄存器</strong> （88H）可位寻址</p>
+<p><img src="TCON.jpg" alt="TCON"></p>
+<p><strong>SCON寄存器</strong>（89H）可位寻址</p>
+<p><img src="SCON.jpg" alt="SCON"></p>
+<p>TI 串行口发送中断标志位、RI串行口接收中断标志位。响应中断后，TI、RI 都不会硬件清 0 ，而是需要软件方式清 0 。</p>
+<p> <strong>IE寄存器</strong>  （中断允许寄存器）0A8H 可位寻址</p>
+<p><img src="TE%E5%AF%84%E5%AD%98%E5%99%A8.jpg" alt="TE寄存器"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">每一位的功能说明如下：</span><br><span class="line">EA:允许&#x2F;禁止全部中断。当EA&#x3D;0，则禁止所有中断的响应；当EA&#x3D;1,则打开全局中断控制。 </span><br><span class="line">EC:未讲</span><br><span class="line">ET2:未讲</span><br><span class="line">ES:串行口中|断允许&#x2F;禁止位。当ES&#x3D;1时允许，当ES&#x3D;0时禁止。</span><br><span class="line">ET1:定时器&#x2F;计数器1中断允许&#x2F;禁止位，当ET1&#x3D;1时允许，当ET1&#x3D;0时禁止。</span><br><span class="line">EX1:外部中断1允许&#x2F;禁止位，当EX1&#x3D;1时允许，当EX1&#x3D;0时禁止。</span><br><span class="line">ETO:定时器&#x2F;计数器0中断允许&#x2F;禁止位，当ET0&#x3D;1时允许，当ET0&#x3D;0时禁止。</span><br><span class="line">EXO:外部中断0中断允许&#x2F;禁止位，当EX0&#x3D;1时允许，当EX0&#x3D;0时禁止。</span><br><span class="line">对中断允许的软件控制可分为两级；由EA位的置位&#x2F;复位实现对所有中断源请求的控制，当置EA&#x3D;1 时，通过各允许位的置位&#x2F;复位控制各中断的允许。</span><br></pre></td></tr></table></figure>
+
+<p><strong>IP寄存器</strong> 中断优先级寄存器 B8H 可位寻址</p>
+<p><img src="IP%E5%AF%84%E5%AD%98%E5%99%A8.jpg" alt="IP寄存器"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PS:串行口中断优先级定义位，当PS&#x3D;1时为优先级1，当PS&#x3D;0时为优先级0。</span><br><span class="line">PT1:定时器&#x2F;计数器1中断优先级定义位，当PT1&#x3D;1时为优先级1,当PT1&#x3D;0时为优先级0。 </span><br><span class="line">PX1:&#x2F;INT1中断优先级定义位，当PX1&#x3D;1时为优先级1，当PX1&#x3D;0时为优先级0。</span><br><span class="line">PT0:定时器&#x2F;计数器0中断优先级定义位，当PT0&#x3D;1时为优先级1,当PT0&#x3D;0时为优先级0。 </span><br><span class="line">PX0: &#x2F;INT0中断优先级定义位，当PX0&#x3D;1时为优先级1，当PX0&#x3D;0时为优先级0</span><br></pre></td></tr></table></figure>
+
+<p>单片机中每个中断原都可以被设置为高优先级中断（=1）或 低优先级中断（=0）其中运行的低优先级中断函数可以被高优先级的中断申请所打断。（实现中断的嵌套），而运行的高优先级中断不能被低优先级中断请求打断。此外同优先级的中断申请不能打断正在执行的同优先级中断函数。</p>
+<p>多个同级中断源同时发出中断申请时，按自然优先级响应中断（排队）。</p>
+<h3 id="5-3-中断处理过程"><a href="#5-3-中断处理过程" class="headerlink" title="5.3 中断处理过程"></a>5.3 中断处理过程</h3><p>包括 中断请求、中断响应、中断服务、中断返回。</p>
+<p><strong>中断响应</strong> ：从CPU 发现中断 到开始执行中断的过程</p>
+<p>响应的条件为：</p>
+<p>​    1.有中断源发出中断申请。</p>
+<p>​    2.中断允许为 EA = 1，开总中断。</p>
+<p>​    3.申请中断的中断源的中断允许位 为 1  .</p>
+<p>满足以上条件一般都会响应中断，除CPU正在执行更高优先级的中断，或其它特殊代码。中断相应会被阻止。</p>
+<p>CPU响应中断后硬件会自动做如下工作：</p>
+<p>​    1.中断优先级查询，对后来同级或低级的中断不理会。</p>
+<p>​    2.保护断点，把程序计数器PC的内容压入堆栈保存。</p>
+<p>​    3.清除 <strong>可清除</strong> 的中断标志位。</p>
+<p><strong>响应时间</strong> 所谓中断响应时间是指从查询请求标志位到转向区入口地址需的机器周期数。一般情况下外部中断响应时间都是大于 3个机器周期而小于 8个机器周期，在这两种极情况之间。当然，如果出现有同级或高中断正在响应服务需等待的时候那么间就无法计算了。一般应用情况下，终端行营时间的长短同城无需考虑。</p>
+<p><strong>中断请求的撤除</strong></p>
+<p>CPU响应中断请求，转向中断服务程序执行，在其执行中断返回指令之前中断请求倍号必须 撤除，否则将可能再次引起中断而出错。<br>中断请求撤除的方式有三种：<br>(1)    单片机内部硬件自动复位：对于定时器/计数器T0、T1及采用边<strong>沿触发方式</strong>的外部中断请求， CPU在响应中断后，由内部硬件自动撤除中断请求：<br>(2)    应用软件淸除响应标志：对于串行口接收/发送中断请求， CPU响应中断后，内部无硬件自动复位RI、TI、必须在中断服务程序中<strong>淸除这些标志</strong>， 才能撤除中断；<br>(3)    既无软件淸除也无硬件撤除：对于采用电平触发方式的外部中断请求，CPU对引脚上的中断请求 信号既无控制能力，也无应答信号。为保证在CPU响应中断后，执行返回指令前<strong>撤除中断请求</strong>，</p>
+<h4 id="中断函数-interupt"><a href="#中断函数-interupt" class="headerlink" title="中断函数  interupt"></a>中断函数  interupt</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">viod 函数名 （void） interrupt n    &#x2F;&#x2F; n 为中断号</span><br><span class="line">&#123;</span><br><span class="line">    函数体语句</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/01/17/%E7%AC%AC%E4%BA%94%E7%AB%A0%E5%8D%95%E7%89%87%E6%9C%BA%E7%9A%84%E4%B8%AD%E6%96%AD%E7%B3%BB%E7%BB%9F/%E5%8D%95%E7%89%87%E6%9C%BA%E7%9A%84%E4%B8%AD%E6%96%AD%E7%B3%BB%E7%BB%9F/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-我的第一篇文章" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
